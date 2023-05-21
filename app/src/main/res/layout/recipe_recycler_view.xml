@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="150dp">
+
+    <ImageView
+        android:id="@+id/food_image"
+        android:layout_width="109dp"
+        android:layout_height="107dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/eggplantcook" />
+
+    <TextView
+        android:id="@+id/food_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="가지볶음"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@+id/food_image"
+        app:layout_constraintTop_toTopOf="@+id/food_image" />
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:scrollbars="vertical"
+        app:layout_constraintStart_toEndOf="@+id/food_image"
+        app:layout_constraintTop_toBottomOf="@+id/food_name">
+
+        <TextView
+            android:id="@+id/food_recipe"
+            android:layout_width="260dp"
+            android:layout_height="260dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="10dp"
+            android:scrollbars="vertical"
+            android:text="1.가지는 어슷하게 썰어서 약간의 소금으로 간을 한다. 돼지고기는 곱게 다져서 간장, 설탕, 후춧가루, 맛술, 깨소금, 참기름으로 양념한다.
+2.①의 가지에 물기가 생기면 깨끗한 거즈로 닦아낸 후 밀가루를 살짝 묻힌다.
+3.①의 가지에 물기가 생기면 깨끗한 거즈로 닦아낸 후 밀가루를 살짝 묻힌다.\n4.③의 가지에 ②의 돼지고기를 얇게 바르고 다른 가지로 샌드위치처럼 겹쳐준다.
+5.④의 가지에 밀가루, 계란, 빵가루 순으로 묻힌 후 180℃ 온도에서 튀겨낸다.
+6.머스터드 1/2큰술 , 마요네즈 2큰술, 설탕 1/4큰술, 소금 약간으로 드레싱을 만들어 곁들인다."
+            app:layout_constraintBottom_toBottomOf="@+id/food_image"
+            app:layout_constraintStart_toEndOf="@+id/food_image"
+            app:layout_constraintTop_toBottomOf="@+id/food_name" />
+
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
