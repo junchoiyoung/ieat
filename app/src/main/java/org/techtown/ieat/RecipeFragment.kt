@@ -1,7 +1,5 @@
 package org.techtown.ieat
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -52,13 +50,14 @@ class RecipeFragment : Fragment() {
         val database = dbHelper.readableDatabase
 
         val tableName = "recipe_basic"
-        val columns = arrayOf("RECIPE_NM_KO", "SUMRY")
+        val columns = arrayOf("RECIPE_NM_KO", "SUMRY", "IMG_URL")
         val cursor = database.query(tableName, columns, null, null, null, null, null)
 
         while (cursor.moveToNext()) {
-            val recipeName = cursor.getString(cursor.getColumnIndex("RECIPE_NM_KO"))
-            val summary = cursor.getString(cursor.getColumnIndex("SUMRY"))
-            itemList.add(RecipeData(recipeName, summary))
+            val recipeName = cursor.getString(cursor.getColumnIndexOrThrow("RECIPE_NM_KO"))
+            val summary = cursor.getString(cursor.getColumnIndexOrThrow("SUMRY"))
+            val imgUrl = cursor.getString(cursor.getColumnIndexOrThrow("IMG_URL"))
+            itemList.add(RecipeData(recipeName, summary, imgUrl))
         }
 
         cursor.close()
