@@ -3,11 +3,13 @@ package org.techtown.ieat
 
 import android.app.Activity
 import android.app.Activity.RESULT_OK
+import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -21,7 +23,13 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.lang.Exception
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -100,26 +108,45 @@ class HomeFragment : Fragment() {
         startActivityForResult(takePictureIntent, cameraRequestCode)
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == cameraRequestCode && resultCode == Activity.RESULT_OK && data != null) {
             val extras = data.extras
-            bitmap = extras?.get("data") as Bitmap
-            imageView.setImageBitmap(bitmap)
+            val capturedImage = extras?.get("data") as Bitmap
+            imageView.setImageBitmap(capturedImage)
+
+            saveImageToGallery(capturedImage)
+        }
+        // ...
+    }
+
+    private fun saveImageToGallery(bitmap: Bitmap) {
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val displayName = "IMG_$timeStamp.jpg"
+
+        val imageCollection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+        val imageDetails = ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, displayName)
+            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            put(MediaStore.Images.Media.WIDTH, bitmap.width)
+            put(MediaStore.Images.Media.HEIGHT, bitmap.height)
         }
 
-        else if (requestCode == STORAGE_CODE && resultCode == Activity.RESULT_OK && data != null) {
-            val imageUri: Uri? = data.data
+        try {
+            val contentResolver = requireContext().contentResolver
+            val imageUri = contentResolver.insert(imageCollection, imageDetails)
             if (imageUri != null) {
-                try {
-                    val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageUri)
-                    imageView2.setImageBitmap(bitmap)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                val outputStream = contentResolver.openOutputStream(imageUri)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                outputStream?.close()
+                Toast.makeText(requireContext(), "사진이 갤러리에 저장되었습니다.", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "사진 저장에 실패하였습니다.", Toast.LENGTH_SHORT).show()
             }
-        } else {
-            Log.d("ActivityResult", "Something went wrong")
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Toast.makeText(requireContext(), "사진 저장에 실패하였습니다.", Toast.LENGTH_SHORT).show()
         }
     }
     override fun onRequestPermissionsResult(
