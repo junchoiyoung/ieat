@@ -1,6 +1,5 @@
 package org.techtown.ieat
 
-
 import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.ContentValues
@@ -9,9 +8,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -23,8 +20,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.lang.Exception
 import java.text.SimpleDateFormat
@@ -37,10 +32,9 @@ private const val ARG_PARAM2 = "param2"
 lateinit var bitmap: Bitmap
 lateinit var imageView: ImageView
 lateinit var imageView2: ImageView
-private val cameraPermissionRequestCode = 1001
-private val cameraRequestCode = 1002
-private const val STORAGE_CODE = 99
-private val OPENGALLERY = 1
+private const val cameraPermissionRequestCode = 1001
+private const val cameraRequestCode = 1002
+private const val OPENGALLERY = 1
 
 class HomeFragment : Fragment() {
     private var param1: String? = null
@@ -123,7 +117,6 @@ class HomeFragment : Fragment() {
                 loadImageFromGallery(imageUri)
             }
         }
-        // ...
     }
 
     private fun loadImageFromGallery(imageUri: Uri) {
@@ -132,7 +125,7 @@ class HomeFragment : Fragment() {
             imageView2.setImageBitmap(bitmap)
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(requireContext(), "갤러리에서 이미지를 불러오는데 실패하였습니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), R.string.load_fail, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -155,13 +148,13 @@ class HomeFragment : Fragment() {
                 val outputStream = contentResolver.openOutputStream(imageUri)
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
                 outputStream?.close()
-                Toast.makeText(requireContext(), "사진이 갤러리에 저장되었습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.pic_save_correct, Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(requireContext(), "사진 저장에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.pic_save_fail, Toast.LENGTH_SHORT).show()
             }
         } catch (e: IOException) {
             e.printStackTrace()
-            Toast.makeText(requireContext(), "사진 저장에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), R.string.pic_save_fail, Toast.LENGTH_SHORT).show()
         }
     }
     override fun onRequestPermissionsResult(
@@ -176,7 +169,7 @@ class HomeFragment : Fragment() {
             } else {
                 Toast.makeText(
                     requireContext(),
-                    "카메라 권한이 거부되었습니다.",
+                    R.string.camera_access_deny,
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -184,7 +177,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun openGallery(){
-        val intent: Intent =Intent(Intent.ACTION_GET_CONTENT)
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.setType("image/*")
         startActivityForResult(intent, OPENGALLERY)
     }
