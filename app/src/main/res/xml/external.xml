@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--파일 프로바이더가 저장될 장소의 path-->
+    <external-files-path
+        name="external_files"
+        path="." /> <!--path=현재 위치-->
+
+    <external-path
+        name="storage/emulated/0"
+        path="." />
+
+    <root-path
+        name="root"
+        path="." />
+</paths>
