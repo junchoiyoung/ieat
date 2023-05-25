@@ -3,7 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET"/>
 
+    <!-- 권한 그룹 : CAMERA -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- 권한 그룹 : STORAGE-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <uses-feature android:name="android.hardware.camera" />
+
     <application
+        android:requestLegacyExternalStorage="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:usesCleartextTraffic="true"
@@ -26,6 +35,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.mycamera.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <!-- authorities="현재 패키지명.FileProvider" 이 앱의 파일 프로바이더에 권한 부여-->
+            <!--grantUriPermissions=사진 가져올 때 주소 필요해서 true-->
+
+            <!--찍은 사진 저장될 주소-->
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/external" />
+        </provider>
     </application>
 
 </manifest>
