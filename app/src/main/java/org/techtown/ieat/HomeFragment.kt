@@ -117,8 +117,23 @@ class HomeFragment : Fragment() {
             imageView.setImageBitmap(capturedImage)
 
             saveImageToGallery(capturedImage)
+        } else if (requestCode == OPENGALLERY && resultCode == Activity.RESULT_OK && data != null) {
+            val imageUri: Uri? = data.data
+            if (imageUri != null) {
+                loadImageFromGallery(imageUri)
+            }
         }
         // ...
+    }
+
+    private fun loadImageFromGallery(imageUri: Uri) {
+        try {
+            val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageUri)
+            imageView2.setImageBitmap(bitmap)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(requireContext(), "갤러리에서 이미지를 불러오는데 실패하였습니다.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun saveImageToGallery(bitmap: Bitmap) {
