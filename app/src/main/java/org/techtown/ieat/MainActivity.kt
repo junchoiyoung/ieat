@@ -1,23 +1,10 @@
 package org.techtown.ieat
 
-import android.app.Activity
-import android.content.pm.PackageManager
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import org.techtown.ieat.databinding.ActivityMainBinding
-import java.io.File
 
 private const val TAG_HOME = "home_fragment"
 private const val TAG_RECIPE = "recipe_fragment"
@@ -31,9 +18,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-
-
         setFragment(TAG_HOME, HomeFragment())
 
         binding.navigationView.setOnItemSelectedListener { item ->
@@ -45,9 +29,7 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-
     }
-
 
     private fun setFragment(tag:String, fragment: Fragment) {
         val manager: FragmentManager = supportFragmentManager

@@ -1,14 +1,16 @@
 package org.techtown.ieat
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-class RecipeAdapter(private val itemList: ArrayList<RecipeData>) :
+class RecipeAdapter(private val itemList: ArrayList<RecipeData>, private val recyclerView: RecyclerView) :
     RecyclerView.Adapter<RecipeAdapter.BoardViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoardViewHolder {
@@ -17,7 +19,7 @@ class RecipeAdapter(private val itemList: ArrayList<RecipeData>) :
     }
 
     override fun getItemCount(): Int {
-        return itemList.count()
+        return itemList.size
     }
 
     inner class BoardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -38,5 +40,18 @@ class RecipeAdapter(private val itemList: ArrayList<RecipeData>) :
         println(holder.recipe_ex.text)
         println(itemList[position].imgUrl)
     }
-    //약간의 여유를 가지고~
+
+    init {
+        // 구분선(Divider)의 Drawable 가져오기
+        val divider: Drawable? = recyclerView.context.getDrawable(R.drawable.divider)
+
+        // DividerItemDecoration 생성 및 Drawable 설정
+        val dividerItemDecoration = DividerItemDecoration(recyclerView.context, DividerItemDecoration.VERTICAL)
+        if (divider != null) {
+            dividerItemDecoration.setDrawable(divider)
+        }
+
+        // 실제 RecyclerView에 DividerItemDecoration 추가
+        recyclerView.addItemDecoration(dividerItemDecoration)
+    }
 }
