@@ -1,16 +1,20 @@
 package org.techtown.ieat
 
+import android.app.AlertDialog
+import android.content.Context
+import android.content.DialogInterface
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-class RecipeAdapter(private val itemList: ArrayList<RecipeData>, private val recyclerView: RecyclerView) :
+class RecipeAdapter(private val itemList: ArrayList<RecipeData>, private val recyclerView: RecyclerView,var con: Context) :
     RecyclerView.Adapter<RecipeAdapter.BoardViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoardViewHolder {
@@ -23,9 +27,35 @@ class RecipeAdapter(private val itemList: ArrayList<RecipeData>, private val rec
     }
 
     inner class BoardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val recipe_id = itemView.findViewById<TextView>(R.id.rcp_Id)
-        val recipe_ex = itemView.findViewById<TextView>(R.id.rcp_Ex)
-        val repImg = itemView.findViewById<ImageView>(R.id.rcp_Img)
+
+        var recipe_id = itemView.findViewById<TextView>(R.id.rcp_Id)
+        var recipe_ex = itemView.findViewById<TextView>(R.id.rcp_Ex)
+        var repImg = itemView.findViewById<ImageView>(R.id.rcp_Img)
+
+        //클릭이벤트
+        init {
+            repImg = itemView.findViewById(R.id.rcp_Img)
+            recipe_id = itemView.findViewById(R.id.rcp_Id)
+            recipe_ex = itemView.findViewById(R.id.rcp_Ex)
+
+            itemView.setOnClickListener{
+                AlertDialog.Builder(con).apply {
+                    var position = adapterPosition
+                    var RecipeData = itemList[position]
+                    setTitle(RecipeData.recipeId)
+                    setMessage(RecipeData.recipeEx)
+                    setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
+                        Toast.makeText(con, "OK BUTTON CLICK", Toast.LENGTH_SHORT).show()
+                    })
+                    show()
+                }
+
+            }
+
+
+        }
+
+
     }
 
     override fun onBindViewHolder(holder: BoardViewHolder, position: Int) {
@@ -35,6 +65,8 @@ class RecipeAdapter(private val itemList: ArrayList<RecipeData>, private val rec
             .load(itemList[position].imgUrl)
             .error(R.drawable.eat_icon)
             .into(holder.repImg)
+
+
 
         println(holder.recipe_id.text)
         println(holder.recipe_ex.text)

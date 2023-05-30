@@ -42,7 +42,7 @@ class RecipeFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_recipe, container, false)
         recyclerView = view.findViewById(R.id.allView)
-        adapter = RecipeAdapter(itemList,recyclerView)
+        adapter = RecipeAdapter(itemList,recyclerView,requireContext())
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
