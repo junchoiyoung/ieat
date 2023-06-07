@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -24,72 +23,42 @@
             android:textColor="@color/lightGreen"
             android:textSize="22sp" />
 
-        <ImageButton
-            android:id="@+id/btn_camera"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="right"
-            android:layout_marginRight="20dp"
-            android:background="@color/white"
-            android:contentDescription="카메라 버튼"
-            android:src="@drawable/ic_camera" />
-
-        <ImageButton
-            android:id="@+id/btn_gallery"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="right"
-            android:layout_marginRight="20dp"
-            android:background="@color/white"
-            android:contentDescription="갤러리 버튼"
-            app:srcCompat="@android:drawable/ic_menu_gallery" />
-
-        <ImageButton
-            android:id="@+id/btn_reset"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginRight="20dp"
-            android:background="@color/white"
-            android:contentDescription="초기화 버튼"
-            app:srcCompat="@android:drawable/ic_menu_delete" />
     </androidx.appcompat.widget.Toolbar>
 
     <ImageView
-        android:id="@+id/avatars"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        tools:srcCompat="@tools:sample/avatars" />
+        android:layout_height="400dp"
+        android:background="#000"
+        android:id="@+id/imageView"/>
 
-    <TextView
-        android:id="@+id/recog_ing"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="인식된 재료"
-        android:gravity="center"
-        android:textSize="20dp" />
+        android:id="@+id/linLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/imageView">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이미지 선택"
+            android:layout_marginRight="10dp"
+            android:id="@+id/selectBtn"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="인식하기"
+            android:id="@+id/predictBtn"/>
+
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/recog_real"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="재료"
-        android:textSize="30dp" />
-
-    <TextView
-        android:id="@+id/having_ing"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="재료 현황"
-        android:gravity="center"
-        android:textSize="20dp"/>
-
-    <TextView
-        android:id="@+id/having_real"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:text="보유중인 재료"
-        android:textSize="20dp"/>
+        android:id="@+id/resView"
+        android:text="결과"
+        android:textSize="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@+id/linLayout"/>
 
 
-</LinearLayout>
+</RelativeLayout>
