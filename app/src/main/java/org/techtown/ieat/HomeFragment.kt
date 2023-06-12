@@ -82,7 +82,8 @@ class HomeFragment : Fragment() {
             openGallery()
         }
         btnReset.setOnClickListener {
-            imageView.setImageBitmap(null)
+//            imageView.setImageBitmap(null)
+            imageView.setImageResource(R.drawable.umseunglion)
             textView.text = "결과"
             Toast.makeText(requireContext(), "초기화 되었습니다.", Toast.LENGTH_SHORT).show()
         }
@@ -127,7 +128,6 @@ class HomeFragment : Fragment() {
                         processImage(it)
                     }
                 }
-
                 GALLERY_REQUEST_CODE -> {
                     val imageUri = data?.data
                     imageUri?.let {
