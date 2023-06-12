@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,6 +41,8 @@ class HomeFragment : Fragment() {
     private lateinit var interpreter: Interpreter
     private lateinit var imageView: ImageView
     private lateinit var textView: TextView
+
+    private val Tag = "양띵: "
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -124,6 +127,7 @@ class HomeFragment : Fragment() {
                         processImage(it)
                     }
                 }
+
                 GALLERY_REQUEST_CODE -> {
                     val imageUri = data?.data
                     imageUri?.let {
@@ -134,6 +138,7 @@ class HomeFragment : Fragment() {
                     }
                 }
             }
+            imageView.setImageURI(data?.data)
         }
     }
 
@@ -203,39 +208,47 @@ class HomeFragment : Fragment() {
         // 출력에서 박스 정보 추출
         val outputBoxes = outputs[0]
 
+        Log.d(Tag, "outputboexes_size" + outputBoxes.size.toString())
+
         // 객체 검출 결과 처리
-        val boundingBoxes = mutableListOf<BoundingBox>()
+//        val boundingBoxes = mutableListOf<BoundingBox>()
+        var min = 0.0f
+        var high_value = 0
+
         for (i in outputBoxes.indices) {
             val classProbabilities = outputBoxes[i]
-            val classIndex = classProbabilities.slice(5 until 30).indices.maxByOrNull { classProbabilities[it + 5] }
+            val classIndex =
+                classProbabilities.slice(5 until 30).indices.maxByOrNull { classProbabilities[it + 5] }
             val classProbability = classProbabilities[classIndex!! + 5]
 
-            if (classProbability > CONFIDENCE_THRESHOLD) {
-                val centerX = classProbabilities[0] * resizedBitmap.width
-                val centerY = classProbabilities[1] * resizedBitmap.height
-                val width = classProbabilities[2] * resizedBitmap.width
-                val height = classProbabilities[3] * resizedBitmap.height
-
-                val left = centerX - width / 2
-                val top = centerY - height / 2
-                val right = centerX + width / 2
-                val bottom = centerY + height / 2
-
-                val label = classLabels[classIndex]
-                val boundingBox = BoundingBox(label, classProbability, left, top, right, bottom)
-                boundingBoxes.add(boundingBox)
+            if (classProbability > CONFIDENCE_THRESHOLD && min < classProbability) {
+                high_value = classIndex
+                min = classProbability
             }
+
+
+//            if (classProbability > CONFIDENCE_THRESHOLD) {
+//                val centerX = classProbabilities[0] * resizedBitmap.width
+//                val centerY = classProbabilities[1] * resizedBitmap.height
+//                val width = classProbabilities[2] * resizedBitmap.width
+//                val height = classProbabilities[3] * resizedBitmap.height
+//
+//                val left = centerX - width / 2
+//                val top = centerY - height / 2
+//                val right = centerX + width / 2
+//                val bottom = centerY + height / 2
+//
+//                val label = classLabels[classIndex]
+//                val boundingBox = BoundingBox(label, classProbability, left, top, right, bottom)
+//                boundingBoxes.add(boundingBox)
+//            }
         }
 
         // 결과 출력
-        val labelText = StringBuilder()
-        for (boundingBox in boundingBoxes)
-            labelText.append("Label: ${boundingBox.label}\n")
-        val labels = boundingBoxes.joinToString("\n") { it.label }
-        textView.text = labels
-
-
-        // 객체 검사 결과를 이용하여 작업 수행
-        // 예: 화면에 결과를 표시하거나 특정 동작을 수행
+//        val labelText = StringBuilder()
+//        for (boundingBox in boundingBoxes)
+//            labelText.append("Label: ${boundingBox.label}\n")
+//        val labels = boundingBoxes.joinToString("\n") { it.label }
+        textView.text = classLabels[high_value]
     }
 }
