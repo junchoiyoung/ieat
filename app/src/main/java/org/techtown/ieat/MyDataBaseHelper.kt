@@ -8,7 +8,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 
-class DataBaseHelper(private val context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
+class MyDataBaseHelper (private val context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
 
     companion object {
         private const val DB_NAME = "myrecipe.db"

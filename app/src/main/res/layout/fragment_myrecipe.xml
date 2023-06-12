@@ -9,37 +9,30 @@
     tools:context=".MainActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/mainToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/mainToolbar"
         android:background="@color/white"
-        android:elevation="20dp"
         android:minHeight="?attr/actionBarSize"
-        app:contentInsetStart="0dp">
+        app:contentInsetStart="0dp"
+        android:elevation="20dp"
+        >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:text="내 레시피"
+            android:textSize="22sp"
             android:textColor="@color/lightGreen"
-            android:textSize="22sp" />
+            android:layout_gravity="center"/>
+
     </androidx.appcompat.widget.Toolbar>
 
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/allView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/Myrecipeview"
-            android:layout_width="match_parent"
-            android:layout_height="677dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/recipe_recycler_view" />
-
-
-    </LinearLayout>
+        tools:listitem="@layout/item_view" />
 
 </LinearLayout>
