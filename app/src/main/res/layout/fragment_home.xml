@@ -57,9 +57,15 @@
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="400dp"
-        android:src="@drawable/umseunglion"
+        android:src="@drawable/main_pic"
+        android:layout_below="@+id/mainToolbar"
         android:background="#000" />
 
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="3dp"-->
+<!--        android:layout_below="@+id/imageView"-->
+<!--        android:background="@color/purple_200"/>-->
 
     <TextView
         android:id="@+id/resView"
