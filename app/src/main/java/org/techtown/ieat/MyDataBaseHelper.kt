@@ -3,6 +3,7 @@ package org.techtown.ieat
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -11,7 +12,7 @@ import java.io.InputStream
 class MyDataBaseHelper (private val context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
 
     companion object {
-        private const val DB_NAME = "myrecipe.db"
+        private const val DB_NAME = "mymyrecipe.db"
         private const val DB_VERSION = 1
         private const val DB_PATH = "/data/data/%s/databases/"
 
@@ -31,11 +32,13 @@ class MyDataBaseHelper (private val context: Context) : SQLiteOpenHelper(context
     // 데이터베이스가 이미 존재하는지 확인
     private fun checkDatabase(): Boolean {
         val dbFile = File(DB_PATH.format(context.packageName), DB_NAME)
+        Log.d("db: ","파일확인")
         return dbFile.exists()
     }
 
     // assets 폴더의 데이터베이스 파일을 디바이스로 복사
     private fun copyDatabase() {
+        Log.d("db: ", "copydatabase")
         try {
             val folder = File(DB_PATH.format(context.packageName))
             if (!folder.exists()) {
@@ -72,13 +75,24 @@ class MyDataBaseHelper (private val context: Context) : SQLiteOpenHelper(context
     }
 
     // onCreate - 테이블 생성 등 초기 설정
-    override fun onCreate(db: SQLiteDatabase) {
+    override fun onCreate(db: SQLiteDatabase?) {
         // 필요한 경우 테이블 생성 등 초기 설정 작업을 수행
+        val create = "create table if not exists ingred (INGREDIENT text primary key)"
+        Log.d("db: ", "onCreate")
+        //실행시켜 줍니다.
+        db?.execSQL(create)
     }
 
     // onUpgrade - 데이터베이스 버전 업그레이드 시 호출
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         // 필요한 경우 테이블 구조 변경 등 업그레이드 작업을 수행
+        Log.d("db: ", "upgrade")
+    }
+
+    private fun createTables(db: SQLiteDatabase?) {
+        // 테이블 생성 등 초기 설정 작업을 수행
+        val create = "CREATE TABLE IF NOT EXISTS ingred (INGREDIENT TEXT PRIMARY KEY)"
+        db?.execSQL(create)
     }
 
     // 사용할 데이터베이스 객체 반환

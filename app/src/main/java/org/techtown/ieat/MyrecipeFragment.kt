@@ -1,13 +1,17 @@
 package org.techtown.ieat
 
 import android.content.Intent
+import android.nfc.Tag
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.lang.Exception
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,6 +28,10 @@ class MyrecipeFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private lateinit var values : ArrayList<String>
+    var ingred = mutableListOf<String>()
+    var recipeId = mutableListOf<String>()
+    private var Tag = "양띵: "
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -37,37 +45,123 @@ class MyrecipeFragment : Fragment() {
     private lateinit var adapter: MyrecipeAdapter
     private val itemList = ArrayList<Myrecipe_data>()
 
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//        try {
+//
+////            val receiveBundle = arguments
+////            Log.d(Tag, receiveBundle.toString())
+////            val receivedSet = receiveBundle?.getStringArrayList("set_value")?.toMutableSet()
+////            Log.d(Tag, receivedSet.toString())
+////            values = ArrayList(receivedSet)
+////            val asdfsdfa = fragmentManager?.findFragmentByTag("HomeFragmentTag") as HomeFragment
+////
+////            values = ArrayList(asdfsdfa.set)
+//
+//            ingredient()
+//            recipe()
+//
+//        }catch (e : Exception){
+//            Log.d(Tag, e.toString())
+//        }
+//        values = arguments?.getStringArrayList("set_value") ?: ArrayList()
+//        Log.d(Tag,"values: "+values.toString())
+//        if (values != null) {
+//            // setValues를 사용하여 필요한 작업 수행
+//            ingredient()
+//            recipe()
+//        }
 
+//    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_myrecipe, container, false)
-        recyclerView = view.findViewById(R.id.allView)
+        recyclerView = view.findViewById(R.id.allView_my)
         adapter = MyrecipeAdapter(itemList,recyclerView,requireContext())
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        ingredient()
+        recipID()
+        recipe()
+
+        return view
+    }
+
+    fun ingredient(){
+
+        val dbHelper = MyDataBaseHelper(requireContext())
+        val database = dbHelper.readableDatabase
+
+        val ingredient_table = "ingred"
+        val ingredient_columns = arrayOf("INGREDIENT")
+
+//        var selection = "IRDNT_NM IN (${values.map { "?" }.joinToString()})"
+//        var selectionsArgs = values.toTypedArray()
+
+        val cursor = database.query(ingredient_table, ingredient_columns, null, null, null, null, null)
+
+        while (cursor.moveToNext()) {
+            val recipe = cursor.getString(cursor.getColumnIndexOrThrow("INGREDIENT"))
+            ingred.add(recipe)
+            Log.d(Tag, recipe)
+        }
+
+        cursor.close()
+        dbHelper.close()
+        adapter.notifyDataSetChanged()
+
+    }
+
+    fun recipID(){
+        val dbHelper = MyDataBaseHelper(requireContext())
+        val database = dbHelper.readableDatabase
+
+        values = ArrayList(ingred)
+
+        val ingredient_table = "recipe_ingredient"
+        val ingredient_columns = arrayOf("RECIPE_ID")
+        var selection = "IRDNT_NM IN (${values.map { "?" }.joinToString()})"
+        Log.d(Tag, values.toString())
+        Log.d(Tag, selection)
+        var selectionsArgs = values.toTypedArray()
+
+        val cursor = database.query(ingredient_table, ingredient_columns, selection, selectionsArgs, null, null, null)
+
+        while (cursor.moveToNext()) {
+            val recipe = cursor.getString(cursor.getColumnIndexOrThrow("RECIPE_ID"))
+            recipeId.add(recipe)
+            Log.d(Tag, recipe)
+        }
+
+        cursor.close()
+        dbHelper.close()
+        adapter.notifyDataSetChanged()
+    }
+
+    fun recipe(){
         val dbHelper = MyDataBaseHelper(requireContext())
         val database = dbHelper.readableDatabase
 
         val tableName = "recipe_basic"
         val columns = arrayOf("RECIPE_NM_KO", "SUMRY", "IMG_URL")
-        val cursor = database.query(tableName, columns, null, null, null, null, null)
+        var selection = "RECIPE_ID IN (${recipeId.map { "?" }.joinToString()})"
+        var selectionsArgs = recipeId.toTypedArray()
+        val main_cursor = database.query(tableName, columns, selection, selectionsArgs, null, null, null)
 
-        /*while (cursor.moveToNext()) {
-            val recipeName = cursor.getString(cursor.getColumnIndexOrThrow("RECIPE_NM_KO"))
-            val summary = cursor.getString(cursor.getColumnIndexOrThrow("SUMRY"))
-            val imgUrl = cursor.getString(cursor.getColumnIndexOrThrow("IMG_URL"))
+        while (main_cursor.moveToNext()) {
+            val recipeName = main_cursor.getString(main_cursor.getColumnIndexOrThrow("RECIPE_NM_KO"))
+            val summary = main_cursor.getString(main_cursor.getColumnIndexOrThrow("SUMRY"))
+            val imgUrl = main_cursor.getString(main_cursor.getColumnIndexOrThrow("IMG_URL"))
+            Log.d(Tag, recipeName+ summary+ imgUrl)
             itemList.add(Myrecipe_data(recipeName, summary, imgUrl))
         }
 
-        cursor.close()*/
-        dbHelper.close()
+        main_cursor.close()
         adapter.notifyDataSetChanged()
-
-        return view
     }
 
 
@@ -90,6 +184,5 @@ class MyrecipeFragment : Fragment() {
                 }
             }
     }
-
 
 }

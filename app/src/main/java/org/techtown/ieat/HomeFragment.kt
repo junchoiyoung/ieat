@@ -3,8 +3,10 @@ package org.techtown.ieat
 
 import android.Manifest
 import android.app.Activity.RESULT_OK
+import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.sqlite.SQLiteDatabase
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -32,6 +34,9 @@ import java.io.InputStreamReader
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.channels.FileChannel
+import java.util.ArrayList
+import kotlin.concurrent.fixedRateTimer
+import kotlin.reflect.typeOf
 
 class HomeFragment : Fragment() {
     private val CAMERA_PERMISSION_REQUEST_CODE = 1001
@@ -44,6 +49,8 @@ class HomeFragment : Fragment() {
 
     private val Tag = "HomeFragement: "
 
+    var set = mutableSetOf<String>()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,6 +61,11 @@ class HomeFragment : Fragment() {
         val galleryButton = view.findViewById<ImageButton>(R.id.galleryButton)
         val btnReset = view.findViewById<ImageButton>(R.id.btn_reset)
         textView = view.findViewById(R.id.resView)
+
+
+
+
+
 
         // TensorFlow Lite 모델 로드
         val assetManager = requireContext().assets
@@ -129,6 +141,7 @@ class HomeFragment : Fragment() {
                     }
                     imageView.setImageBitmap(imageBitmap)
                 }
+
                 GALLERY_REQUEST_CODE -> {
                     val imageUri = data?.data
                     imageUri?.let {
@@ -222,34 +235,37 @@ class HomeFragment : Fragment() {
                 classProbabilities.slice(5 until 30).indices.maxByOrNull { classProbabilities[it + 5] }
             val classProbability = classProbabilities[classIndex!! + 5]
 
-            if (classProbability > CONFIDENCE_THRESHOLD && min < classProbability) {
-                high_value = classIndex
-                min = classProbability
+            if (classProbability > CONFIDENCE_THRESHOLD) {
+
+
+                if (min < classProbability) {
+                    high_value = classIndex
+                    min = classProbability
+                }
             }
 
-
-//            if (classProbability > CONFIDENCE_THRESHOLD) {
-//                val centerX = classProbabilities[0] * resizedBitmap.width
-//                val centerY = classProbabilities[1] * resizedBitmap.height
-//                val width = classProbabilities[2] * resizedBitmap.width
-//                val height = classProbabilities[3] * resizedBitmap.height
-//
-//                val left = centerX - width / 2
-//                val top = centerY - height / 2
-//                val right = centerX + width / 2
-//                val bottom = centerY + height / 2
-//
-//                val label = classLabels[classIndex]
-//                val boundingBox = BoundingBox(label, classProbability, left, top, right, bottom)
-//                boundingBoxes.add(boundingBox)
-//            }
         }
-
-        // 결과 출력
-//        val labelText = StringBuilder()
-//        for (boundingBox in boundingBoxes)
-//            labelText.append("Label: ${boundingBox.label}\n")
-//        val labels = boundingBoxes.joinToString("\n") { it.label }
         textView.text = classLabels[high_value]
+        set.add(classLabels[high_value])
+
+        val dbHelper = MyDataBaseHelper(requireContext())
+        val database = dbHelper.writableDatabase
+
+        database.delete("ingred",null,null)
+
+        var contentValues = ContentValues()
+        contentValues.put("INGREDIENT","오이")
+
+        database.insert("ingred", null, contentValues)
+//        val fragmentManager = requireActivity().supportFragmentManager
+//        fragmentManager.beginTransaction()
+//            .replace(R.id.myrecipe, myrecipeFragment)
+//            .commit()
+
+//        bundle.putString("key1", "감자")
+//        bundle.putString("key2", "가지")
+//        myrecipeFragment.arguments = bundle
+//        MyrecipeFragment.newInstance(ArrayList(set))
     }
+
 }
