@@ -42,7 +42,7 @@ class HomeFragment : Fragment() {
     private lateinit var imageView: ImageView
     private lateinit var textView: TextView
 
-    private val Tag = "양띵: "
+    private val Tag = "HomeFragement: "
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -83,7 +83,7 @@ class HomeFragment : Fragment() {
         }
         btnReset.setOnClickListener {
 //            imageView.setImageBitmap(null)
-            imageView.setImageResource(R.drawable.umseunglion)
+            imageView.setImageResource(R.drawable.main_pic)
             textView.text = "결과"
             Toast.makeText(requireContext(), "초기화 되었습니다.", Toast.LENGTH_SHORT).show()
         }
@@ -127,6 +127,7 @@ class HomeFragment : Fragment() {
                     imageBitmap?.let {
                         processImage(it)
                     }
+                    imageView.setImageBitmap(imageBitmap)
                 }
                 GALLERY_REQUEST_CODE -> {
                     val imageUri = data?.data
@@ -135,10 +136,10 @@ class HomeFragment : Fragment() {
                         imageBitmap?.let {
                             processImage(it)
                         }
+                        imageView.setImageURI(imageUri)
                     }
                 }
             }
-            imageView.setImageURI(data?.data)
         }
     }
 
