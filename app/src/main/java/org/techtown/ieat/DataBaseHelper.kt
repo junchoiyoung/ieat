@@ -1,6 +1,7 @@
 package org.techtown.ieat
 
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import java.io.File
@@ -63,6 +64,20 @@ class DataBaseHelper(private val context: Context) : SQLiteOpenHelper(context, D
     fun openDatabase() {
         val dbPath = DB_PATH.format(context.packageName) + DB_NAME
         database = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READONLY)
+    }
+    fun getRecipeBasicData(recipeNo: String): Cursor? {
+        val db = readableDatabase
+        return db.rawQuery("SELECT * FROM recipe_basic WHERE RECIPE_ID=?", arrayOf(recipeNo))
+    }
+    // recipe_ingredient 테이블에서 recipeId에 해당하는 데이터 가져오기
+    fun getRecipeIngredientData(recipeNo: String): Cursor? {
+        val db = readableDatabase
+        return db.rawQuery("SELECT * FROM recipe_ingredient WHERE RECIPE_ID=?", arrayOf(recipeNo))
+    }
+    // recipe_process 테이블에서 recipeId에 해당하는 데이터 가져오기
+    fun getRecipeProcessData(recipeNo: String): Cursor? {
+        val db = readableDatabase
+        return db.rawQuery("SELECT * FROM recipe_process WHERE RECIPE_ID=? ORDER BY COOKING_NO ASC", arrayOf(recipeNo))
     }
 
     // 데이터베이스 닫기

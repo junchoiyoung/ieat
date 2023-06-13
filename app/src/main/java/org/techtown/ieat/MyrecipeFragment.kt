@@ -106,7 +106,7 @@ class MyrecipeFragment : Fragment() {
         val database = dbHelper.readableDatabase
 
         val tableName = "recipe_basic"
-        val columns = arrayOf("RECIPE_NM_KO", "SUMRY", "IMG_URL")
+        val columns = arrayOf("RECIPE_NM_KO", "SUMRY", "IMG_URL", "RECIPE_ID")
         var selection = "RECIPE_ID IN (${recipeId.map { "?" }.joinToString()})"
         var selectionsArgs = recipeId.toTypedArray()
         val main_cursor = database.query(tableName, columns, selection, selectionsArgs, null, null, null)
@@ -114,9 +114,10 @@ class MyrecipeFragment : Fragment() {
         while (main_cursor.moveToNext()) {
             val recipeName = main_cursor.getString(main_cursor.getColumnIndexOrThrow("RECIPE_NM_KO"))
             val summary = main_cursor.getString(main_cursor.getColumnIndexOrThrow("SUMRY"))
+            val recipeNumber = main_cursor.getString(main_cursor.getColumnIndexOrThrow("RECIPE_ID"))
             val imgUrl = main_cursor.getString(main_cursor.getColumnIndexOrThrow("IMG_URL"))
             Log.d(Tag, recipeName+ summary+ imgUrl)
-            itemList.add(Myrecipe_data(recipeName, summary, imgUrl))
+            itemList.add(Myrecipe_data(recipeName, summary,recipeNumber, imgUrl))
         }
 
         main_cursor.close()

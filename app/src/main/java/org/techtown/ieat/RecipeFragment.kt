@@ -50,14 +50,15 @@ class RecipeFragment : Fragment() {
         val database = dbHelper.readableDatabase
 
         val tableName = "recipe_basic"
-        val columns = arrayOf("RECIPE_NM_KO", "SUMRY", "IMG_URL")
+        val columns = arrayOf("RECIPE_NM_KO", "SUMRY", "IMG_URL", "RECIPE_ID")
         val cursor = database.query(tableName, columns, null, null, null, null, null)
 
         while (cursor.moveToNext()) {
             val recipeName = cursor.getString(cursor.getColumnIndexOrThrow("RECIPE_NM_KO"))
             val summary = cursor.getString(cursor.getColumnIndexOrThrow("SUMRY"))
+            val recipeNumber = cursor.getString(cursor.getColumnIndexOrThrow("RECIPE_ID"))
             val imgUrl = cursor.getString(cursor.getColumnIndexOrThrow("IMG_URL"))
-            itemList.add(RecipeData(recipeName, summary, imgUrl))
+            itemList.add(RecipeData(recipeName, summary, recipeNumber,imgUrl))
         }
 
         cursor.close()

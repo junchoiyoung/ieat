@@ -24,7 +24,7 @@
 
             <TextView
                 android:id="@+id/rcp_Id"
-                android:layout_width="match_parent"
+                android:layout_width="200dp"
                 android:layout_height="40dp"
                 android:text="레시피 이름"
                 android:textSize="23dp" />
@@ -35,6 +35,12 @@
                 android:layout_height="match_parent"
                 android:text="레시피 설명"
                 android:textSize="18dp" />
+            <TextView
+                android:id="@+id/rcp_No"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="숫자"
+                android:textSize="1dp" />
         </LinearLayout>
 
     </LinearLayout>
