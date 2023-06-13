@@ -4,6 +4,7 @@ package org.techtown.ieat
 import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.sqlite.SQLiteDatabase
@@ -39,6 +40,7 @@ import kotlin.concurrent.fixedRateTimer
 import kotlin.reflect.typeOf
 
 class HomeFragment : Fragment() {
+
     private val CAMERA_PERMISSION_REQUEST_CODE = 1001
     private val CAMERA_REQUEST_CODE = 1002
     private val GALLERY_REQUEST_CODE = 1003
@@ -48,6 +50,8 @@ class HomeFragment : Fragment() {
     private lateinit var textView: TextView
 
     private val Tag = "HomeFragement: "
+    private lateinit var dbHelper: MyDataBaseHelper
+    private lateinit var database : SQLiteDatabase
 
     var set = mutableSetOf<String>()
 
@@ -61,12 +65,11 @@ class HomeFragment : Fragment() {
         val galleryButton = view.findViewById<ImageButton>(R.id.galleryButton)
         val btnReset = view.findViewById<ImageButton>(R.id.btn_reset)
         textView = view.findViewById(R.id.resView)
+        dbHelper = MyDataBaseHelper(requireContext())
+        database = dbHelper.writableDatabase
 
 
-
-
-
-
+        database.delete("ingred",null,null)
         // TensorFlow Lite 모델 로드
         val assetManager = requireContext().assets
         val modelFilename = "best-fp162.tflite"
@@ -167,6 +170,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun processImage(bitmap: Bitmap) {
+        var contentValues = ContentValues()
         // BoundingBox 클래스 정의
         data class BoundingBox(
             val label: String,
@@ -225,7 +229,6 @@ class HomeFragment : Fragment() {
         Log.d(Tag, "outputboexes_size" + outputBoxes.size.toString())
 
         // 객체 검출 결과 처리
-//        val boundingBoxes = mutableListOf<BoundingBox>()
         var min = 0.0f
         var high_value = 0
 
@@ -237,7 +240,6 @@ class HomeFragment : Fragment() {
 
             if (classProbability > CONFIDENCE_THRESHOLD) {
 
-
                 if (min < classProbability) {
                     high_value = classIndex
                     min = classProbability
@@ -246,26 +248,17 @@ class HomeFragment : Fragment() {
 
         }
         textView.text = classLabels[high_value]
-        set.add(classLabels[high_value])
 
-        val dbHelper = MyDataBaseHelper(requireContext())
-        val database = dbHelper.writableDatabase
+        var recog : String? = classLabels[high_value]
 
-        database.delete("ingred",null,null)
+        if(set.contains(classLabels[high_value])) recog = null
+        else set.add(classLabels[high_value])
 
-        var contentValues = ContentValues()
-        contentValues.put("INGREDIENT","오이")
+        if(recog != null){
+            contentValues.put("INGREDIENT",classLabels[high_value])
+            database.insert("ingred", null, contentValues)
+        }
 
-        database.insert("ingred", null, contentValues)
-//        val fragmentManager = requireActivity().supportFragmentManager
-//        fragmentManager.beginTransaction()
-//            .replace(R.id.myrecipe, myrecipeFragment)
-//            .commit()
-
-//        bundle.putString("key1", "감자")
-//        bundle.putString("key2", "가지")
-//        myrecipeFragment.arguments = bundle
-//        MyrecipeFragment.newInstance(ArrayList(set))
     }
 
 }

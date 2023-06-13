@@ -69,9 +69,13 @@ class MainActivity : AppCompatActivity() {
         else if (tag == TAG_MYRECIPE){
             if (myRecipe != null){
                 fragTransaction.show(myRecipe)
+                if (myRecipe is MyrecipeFragment){
+                    myRecipe.refresh(dbHelper = MyDataBaseHelper(this))
+                }
             }
         }
 
         fragTransaction.commitAllowingStateLoss()
+//        fragTransaction.commit()
     }
 }

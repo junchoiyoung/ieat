@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -45,34 +46,6 @@ class MyrecipeFragment : Fragment() {
     private lateinit var adapter: MyrecipeAdapter
     private val itemList = ArrayList<Myrecipe_data>()
 
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//        try {
-//
-////            val receiveBundle = arguments
-////            Log.d(Tag, receiveBundle.toString())
-////            val receivedSet = receiveBundle?.getStringArrayList("set_value")?.toMutableSet()
-////            Log.d(Tag, receivedSet.toString())
-////            values = ArrayList(receivedSet)
-////            val asdfsdfa = fragmentManager?.findFragmentByTag("HomeFragmentTag") as HomeFragment
-////
-////            values = ArrayList(asdfsdfa.set)
-//
-//            ingredient()
-//            recipe()
-//
-//        }catch (e : Exception){
-//            Log.d(Tag, e.toString())
-//        }
-//        values = arguments?.getStringArrayList("set_value") ?: ArrayList()
-//        Log.d(Tag,"values: "+values.toString())
-//        if (values != null) {
-//            // setValues를 사용하여 필요한 작업 수행
-//            ingredient()
-//            recipe()
-//        }
-
-//    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -83,24 +56,17 @@ class MyrecipeFragment : Fragment() {
         adapter = MyrecipeAdapter(itemList,recyclerView,requireContext())
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
-        ingredient()
-        recipID()
-        recipe()
-
+        val dbHelper = MyDataBaseHelper(requireContext())
+        refresh(dbHelper)
         return view
     }
 
-    fun ingredient(){
+    fun ingredient(dbHelper: MyDataBaseHelper){
 
-        val dbHelper = MyDataBaseHelper(requireContext())
         val database = dbHelper.readableDatabase
 
         val ingredient_table = "ingred"
         val ingredient_columns = arrayOf("INGREDIENT")
-
-//        var selection = "IRDNT_NM IN (${values.map { "?" }.joinToString()})"
-//        var selectionsArgs = values.toTypedArray()
 
         val cursor = database.query(ingredient_table, ingredient_columns, null, null, null, null, null)
 
@@ -111,13 +77,9 @@ class MyrecipeFragment : Fragment() {
         }
 
         cursor.close()
-        dbHelper.close()
-        adapter.notifyDataSetChanged()
-
     }
 
-    fun recipID(){
-        val dbHelper = MyDataBaseHelper(requireContext())
+    fun recipID(dbHelper: MyDataBaseHelper){
         val database = dbHelper.readableDatabase
 
         values = ArrayList(ingred)
@@ -138,12 +100,9 @@ class MyrecipeFragment : Fragment() {
         }
 
         cursor.close()
-        dbHelper.close()
-        adapter.notifyDataSetChanged()
     }
 
-    fun recipe(){
-        val dbHelper = MyDataBaseHelper(requireContext())
+    fun recipe(dbHelper: MyDataBaseHelper){
         val database = dbHelper.readableDatabase
 
         val tableName = "recipe_basic"
@@ -161,6 +120,13 @@ class MyrecipeFragment : Fragment() {
         }
 
         main_cursor.close()
+    }
+
+    fun refresh(dbHelper: MyDataBaseHelper){
+        itemList.clear()
+        ingredient(dbHelper)
+        recipID(dbHelper)
+        recipe(dbHelper)
         adapter.notifyDataSetChanged()
     }
 

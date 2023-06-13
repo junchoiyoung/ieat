@@ -49,13 +49,8 @@ class MyrecipeAdapter(private val itemList: ArrayList<Myrecipe_data>, private va
                     })
                     show()
                 }
-
             }
-
-
         }
-
-
     }
 
     override fun onBindViewHolder(holder: BoardViewHolder, position: Int) {
@@ -65,8 +60,6 @@ class MyrecipeAdapter(private val itemList: ArrayList<Myrecipe_data>, private va
             .load(itemList[position].imgUrl)
             .error(R.drawable.eat_icon)
             .into(holder.repImg)
-
-
 
         println(holder.recipe_id.text)
         println(holder.recipe_ex.text)
